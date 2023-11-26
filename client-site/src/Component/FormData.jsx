@@ -1,9 +1,11 @@
-import React from 'react';
+/* eslint-disable react-hooks/rules-of-hooks */
+import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { postData } from '../ApiRequest/ApiRequest';
+import { getDataById, postData } from '../ApiRequest/ApiRequest';
+import Navbar from './Navbar';
+import { Link } from 'react-router-dom';
 
 const FormData = () => {
- 
     const [formValue, setFormValue] = useState({
         firstName: '',
         lastName: '',
@@ -17,6 +19,7 @@ const FormData = () => {
         courses: ''
     })
 
+
     const handleChange = (name,value) => {
         setFormValue({
             ...formValue,
@@ -25,18 +28,53 @@ const FormData = () => {
     }
 
    const saveData = async () => {
-     let res = await postData(formValue);
+    //  let res = await postData(formValue);
+    //  console.log(formValue);
+      if(formValue.firstName.length === 0){
+          alert("Please Enter First Name");
+      }
+      else if(formValue.lastName.length === 0){
+          alert("Please Enter Last Name");
+      }
+      else if(formValue.gender.length === 0){
+          alert("Please Enter Gender");
+      }
+      else if(formValue.dateOfBirth.length === 0){
+          alert("Please Enter Date Of Birth");
+      }
+      else if(formValue.nationality.length === 0){
+          alert("Please Enter Nationality");
+      }
+      else if(formValue.address.length === 0){
+          alert("Please Enter Address");
+      }
+      else if(formValue.email.length === 0){
+          alert("Please Enter Email");
+   }
+   else if(formValue.phone.length === 0){
+       alert("Please Enter Phone");
+   }
+   else if(formValue.admissionDate.length === 0){
+       alert("Please Enter Admission Date");
+   }
+   else if(formValue.courses.length === 0){
+       alert("Please Enter Courses");
+   }
+   else{
+       let res = await postData(formValue);
        if(res){
-            console.log(res);
-           console.log("Data saved successfully");
+          alert("Data Added Successfully");
        }
        else{
-           console.log("Something went wrong");
+          alert("Something went wrong");
        }
    }
+  }
 
 
     return (
+        <>
+        <Navbar />
         <div className="max-w-md mx-auto bg-white rounded p-6 shadow-md">
         <h2 className="text-2xl font-bold mb-4">Student Admission Form</h2>
   
@@ -105,11 +143,14 @@ const FormData = () => {
           </div>
   
           {/* Submit Button */}
-          <div className="mt-6">
+         <Link to="/">
+         <div className="mt-6">
             <button onClick={saveData} type="submit" className="bg-blue-500 text-white p-2 rounded-md">Submit</button>
           </div>
+         </Link>
         </div>
       </div>
+        </>
     );
 };
 

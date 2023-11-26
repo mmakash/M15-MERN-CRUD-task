@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { deleteStudent, getData } from "../ApiRequest/ApiRequest";
+import { Link } from "react-router-dom";
 
 const StudentTable = () => {
   const [data, setData] = useState([]);
@@ -62,7 +63,7 @@ const StudentTable = () => {
                    <td>{item.admissionDate}</td>
                    <td>{item.courses}</td>
                    <td><button onClick={()=>{deleteData(item['_id'])}} className="btn btn-outline btn-info">Delete</button></td>
-                   <td><button className="btn btn-outline btn-success">Update</button></td>
+                   <td><Link to={`/form/?id=${item['_id']}`} className="btn btn-outline btn-info">Update</Link></td>
                  </tr>
                )
              })

@@ -46,9 +46,10 @@ exports.deleteStudent = async (req, res) => {
     }
 }
 exports.getStudentsById = async (req, res) => {
-    let id = req.params.id;
     try {
-        let result = await StudentsModel.findOne({ _id: id });
+        let id = req.params.id;
+        let query = { _id: id };
+        let result = await StudentsModel.find(query);
         res.status(200).json({status:"success",data:result});
     }
     catch (err) {
