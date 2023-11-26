@@ -7,6 +7,7 @@ router.post("/create-student", StudentsController.createStudents);
 router.get("/read-all", StudentsController.readAllStudents);
 router.post("/update-student/:id", StudentsController.updateStudent);
 router.get("/delete-student/:id", StudentsController.deleteStudent);
+router.get("/get-student/:id", StudentsController.getStudentsById);
 
 
 module.exports = router;

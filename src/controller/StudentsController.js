@@ -45,4 +45,14 @@ exports.deleteStudent = async (req, res) => {
         res.status(400).json({status:"fail",data:err});
     }
 }
+exports.getStudentsById = async (req, res) => {
+    let id = req.params.id;
+    try {
+        let result = await StudentsModel.findOne({ _id: id });
+        res.status(200).json({status:"success",data:result});
+    }
+    catch (err) {
+        res.status(400).json({status:"fail",data:err});
+    }
+}
 
