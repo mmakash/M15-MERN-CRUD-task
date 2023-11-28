@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Component/Home';
 import FormData from './Component/FormData';
 
+
 const App = () => {
   return (
     <div>

@@ -33,7 +33,7 @@ export async function postData(data) {
 }
 export async function updateData(id, data) {
     try {
-        const response = await axios.put(`http://localhost:4000/api/v1/update-student/${id}`, data);
+        const response = await axios.post(`http://localhost:4000/api/v1/update-student/${id}`, data);
         if(response.status === 200){
             return true;
         }

@@ -1,18 +1,13 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect } from "react";
 import { useState } from "react";
+import { postData, getDataById, updateData } from "../ApiRequest/ApiRequest";
 import Navbar from "./Navbar";
-import { Toaster, toast } from "react-hot-toast";
-import { postData } from "../ApiRequest/ApiRequest";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
-
-
-const FormData = () => {
-  const navigate = useNavigate();
-
-  const [formValue, setFormValue] = useState({
+const StudentForm = () => {
+  let navigate = useNavigate();
+  const [FormValue, setFromValue] = useState({
     firstName: "",
     lastName: "",
     gender: "",
@@ -25,87 +20,91 @@ const FormData = () => {
     courses: "",
   });
 
-  const [updateId, setUpdateId] = useState(null);
+  let [UpdateId, setUpdateId] = useState(null);
 
- useEffect(() => {
-   (async()=>{
-     const urlParams = new URLSearchParams(window.location.search);
-     const id = urlParams.get("id");
-     alert(id);
-     setUpdateId(id);
-   })()
- },[])
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
+    setUpdateId(id);
 
-
-
-  const handleChange = (name, value) => {
-    // setFormValue({
-    //   ...formValue,
-    //   [name]: value,
-    // });
-    setFormValue((formValue)=>{
-      return{
-        ...formValue,
-        [name]: value
+    (async () => {
+      if (id !== null) {
+        FillFrom(id);
       }
-    })
+    })();
+  }, []);
+
+  const FillFrom = async (id) => {
+    let res = await getDataById(id);
+
+    setFromValue({
+      firstName: res.firstName,
+      lastName: res.lastName,
+      gender: res.gender,
+      dateOfBirth: res.dateOfBirth,
+      nationality: res.nationality,
+      address: res.address,
+      email: res.email,
+      phone: res.phone,
+      admissionDate: res.admissionDate,
+      courses: res.courses,
+    });
   };
 
-const save =  async() => {
-  if(formValue.email.length === 0){
-    toast.error("Email Required");
-  }
-  else if(formValue.phone.length === 0){
-    toast.error("Phone Required");
-  }
-  else if(formValue.firstName.length === 0){
-    toast.error("First Name Required");
-  }
-  else if(formValue.lastName.length === 0){
-    toast.error("Last Name Required");
-  }
-  else if(formValue.gender.length === 0){
-    toast.error("Gender Required");
-  }
-  else if(formValue.dateOfBirth.length === 0){
-    toast.error("Date Of Birth Required");
-  }
-  else if(formValue.nationality.length === 0){
-    toast.error("Nationality Required");
-  }
-  else if(formValue.address.length === 0){
-    toast.error("Address Required");
-}
-  else if(formValue.admissionDate.length === 0){
-    toast.error("Admission Date Required");
-  }
-  else if(formValue.courses.length === 0){
-    toast.error("Courses Required");
-  }
-
-
-
-  else{
-    let res = await postData(formValue);
-    if(res){
-      toast.success("Student Data Added");
-      navigate("/");
+  const InputOnChange = (name, value) => {
+    setFromValue((prevFormValue) => ({
+      ...prevFormValue,
+      [name]: value,
+    }));
+  };
+  const Save = async () => {
+    if (FormValue.firstName.length === 0) {
+      toast.error("firstName Required");
+    } else if (FormValue.lastName.length === 0) {
+      toast.error("lastName Required");
+    } else if (FormValue.gender.length === 0) {
+      toast.error("Task Title Required");
+    } else if (FormValue.dateOfBirth.length === 0) {
+      toast.error("dateOfBirth Required");
+    } else if (FormValue.nationality.length === 0) {
+      toast.error("nationality Required");
+    } else if (FormValue.address.length === 0) {
+      toast.error("address Required");
+    } else if (FormValue.email.length === 0) {
+      toast.error("Email Required");
+    } else if (FormValue.phone.length === 0) {
+      toast.error("phone Required");
+    } else if (FormValue.admissionDate.length === 0) {
+      toast.error("admissionDate Required");
+    } else if (FormValue.courses.length === 0) {
+      toast.error("courses Required");
+    } else {
+      if (UpdateId === null) {
+        let res = await postData(FormValue);
+        console.log(res);
+        if (res) {
+          toast.success("Student Data Created");
+          navigate("/");
+        } else {
+          toast.error("Request Fail");
+        }
+      } else {
+        let res = await updateData(FormValue, UpdateId);
+        console.log(res);
+        if (res) {
+          toast.success("Student Data  Update");
+          navigate("/");
+        } else {
+          toast.error(" Update Request Fail");
+        }
+      }
     }
-    else{
-      toast.error("Request Fail");
-    }
-    
-  }
-
-
-}
- 
+  };
   return (
     <>
       <Navbar />
       <div className="max-w-md mx-auto bg-white rounded p-6 shadow-md">
         <h2 className="text-2xl font-bold mb-4">Student Admission Form</h2>
-
 
         <div>
           {/* First Name */}
@@ -117,15 +116,14 @@ const save =  async() => {
               First Name
             </label>
             <input
-              value={formValue.firstName}
-              onChange={(e) => handleChange("firstName", e.target.value)}
+              value={FormValue.firstName}
+              onChange={(e) => InputOnChange("firstName", e.target.value)}
               type="text"
               id="firstName"
               name="firstName"
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
-
 
           {/* Last Name */}
           <div className="mb-4">
@@ -136,15 +134,14 @@ const save =  async() => {
               Last Name
             </label>
             <input
-              value={formValue.lastName}
-              onChange={(e) => handleChange("lastName", e.target.value)}
+              value={FormValue.lastName}
+              onChange={(e) => InputOnChange("lastName", e.target.value)}
               type="text"
               id="lastName"
               name="lastName"
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
-
 
           {/* Gender */}
           <div className="mb-4">
@@ -155,8 +152,8 @@ const save =  async() => {
               Gender
             </label>
             <select
-              value={formValue.gender}
-              onChange={(e) => handleChange("gender", e.target.value)}
+              value={FormValue.gender}
+              onChange={(e) => InputOnChange("gender", e.target.value)}
               id="gender"
               name="gender"
               className="mt-1 p-2 w-full border rounded-md"
@@ -165,7 +162,6 @@ const save =  async() => {
               <option value="female">Female</option>
             </select>
           </div>
-
 
           {/* Date of Birth */}
           <div className="mb-4">
@@ -176,15 +172,14 @@ const save =  async() => {
               Date of Birth
             </label>
             <input
-              value={formValue.dateOfBirth}
-              onChange={(e) => handleChange("dateOfBirth", e.target.value)}
+              value={FormValue.dateOfBirth}
+              onChange={(e) => InputOnChange("dateOfBirth", e.target.value)}
               type="date"
               id="dateOfBirth"
               name="dateOfBirth"
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
-
 
           {/* Nationality */}
           <div className="mb-4">
@@ -195,15 +190,14 @@ const save =  async() => {
               Nationality
             </label>
             <input
-              value={formValue.nationality}
-              onChange={(e) => handleChange("nationality", e.target.value)}
+              value={FormValue.nationality}
+              onChange={(e) => InputOnChange("nationality", e.target.value)}
               type="text"
               id="nationality"
               name="nationality"
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
-
 
           {/* Address */}
           <div className="mb-4">
@@ -214,15 +208,14 @@ const save =  async() => {
               Address
             </label>
             <textarea
-              value={formValue.address}
-              onChange={(e) => handleChange("address", e.target.value)}
+              value={FormValue.address}
+              onChange={(e) => InputOnChange("address", e.target.value)}
               id="address"
               name="address"
               rows="3"
               className="mt-1 p-2 w-full border rounded-md"
             ></textarea>
           </div>
-
 
           {/* Email */}
           <div className="mb-4">
@@ -233,15 +226,14 @@ const save =  async() => {
               Email
             </label>
             <input
-              value={formValue.email}
-              onChange={(e) => handleChange("email", e.target.value)}
+              value={FormValue.email}
+              onChange={(e) => InputOnChange("email", e.target.value)}
               type="email"
               id="email"
               name="email"
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
-
 
           {/* Phone */}
           <div className="mb-4">
@@ -252,15 +244,14 @@ const save =  async() => {
               Phone
             </label>
             <input
-              value={formValue.phone}
-              onChange={(e) => handleChange("phone", e.target.value)}
+              value={FormValue.phone}
+              onChange={(e) => InputOnChange("phone", e.target.value)}
               type="tel"
               id="phone"
               name="phone"
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
-
 
           {/* Admission Date */}
           <div className="mb-4">
@@ -271,15 +262,14 @@ const save =  async() => {
               Admission Date
             </label>
             <input
-              value={formValue.admissionDate}
-              onChange={(e) => handleChange("admissionDate", e.target.value)}
+              value={FormValue.admissionDate}
+              onChange={(e) => InputOnChange("admissionDate", e.target.value)}
               type="date"
               id="admissionDate"
               name="admissionDate"
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
-
 
           {/* Courses */}
           <div className="mb-4">
@@ -290,8 +280,8 @@ const save =  async() => {
               Courses
             </label>
             <input
-              value={formValue.courses}
-              onChange={(e) => handleChange("courses", e.target.value)}
+              value={FormValue.courses}
+              onChange={(e) => InputOnChange("courses", e.target.value)}
               type="text"
               id="courses"
               name="courses"
@@ -299,26 +289,25 @@ const save =  async() => {
             />
           </div>
 
-
           {/* Submit Button */}
-            <div className="mt-6">
-              <button
-                onClick={save}
-                type="submit"
-                className="bg-blue-500 text-white p-2 rounded-md"
-              >
-                Submit
-              </button>
-            </div>
+          <div className="mt-6">
+            <button
+              onClick={Save}
+              type="submit"
+              className="bg-blue-500 text-white p-2 rounded-md"
+            >
+              Submit
+            </button>
+          </div>
         </div>
-        <Toaster position="top-center"/>
       </div>
+      <Toaster
+        className="text-center"
+        position="top-center"
+        reverseOrder={false}
+      />
     </>
   );
 };
 
-
-export default FormData;
-
-
-
+export default StudentForm;
