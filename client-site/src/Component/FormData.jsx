@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import Navbar from "./Navbar";
 import { Toaster, toast } from "react-hot-toast";
-import { postData } from "../ApiRequest/ApiRequest";
+import { getDataById, postData, updateData } from "../ApiRequest/ApiRequest";
 import { useNavigate } from "react-router-dom";
 
 
@@ -27,15 +27,37 @@ const FormData = () => {
 
   const [updateId, setUpdateId] = useState(null);
 
- useEffect(() => {
-   (async()=>{
-     const urlParams = new URLSearchParams(window.location.search);
-     const id = urlParams.get("id");
-     alert(id);
-     setUpdateId(id);
-   })()
- },[])
+  useEffect(() => {
+    (async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      console.log("Query parameter id:", id);
+      setUpdateId(id);
+      if(id !== null){
+        await FillFrom(id);
+      }
+    })();
+  }, []);
+  
 
+  const FillFrom = async (id) => {
+    let res = await getDataById(id);
+    // alert(JSON.stringify(res));
+    console.log(res.data[0]);
+    setFormValue({
+      ...formValue,
+      firstName: res.data[0].firstName,
+      lastName: res.data[0].lastName,
+      gender: res.data[0].gender,
+      dateOfBirth: res.data[0].dateOfBirth,
+      nationality: res.data[0].nationality,
+      address: res.data[0].address,
+      email: res.data[0].email,
+      phone: res.data[0].phone,
+      admissionDate: res.data[0].admissionDate,
+      courses: res.data[0].courses,
+    });
+  }
 
 
   const handleChange = (name, value) => {
@@ -86,6 +108,9 @@ const save =  async() => {
 
 
   else{
+
+    
+  if(updateId === null){
     let res = await postData(formValue);
     if(res){
       toast.success("Student Data Added");
@@ -94,6 +119,17 @@ const save =  async() => {
     else{
       toast.error("Request Fail");
     }
+  }
+  else{
+    let res = await updateData(updateId, formValue);
+    if(res){
+      toast.success("Student Data Updated");
+      navigate("/");
+    }
+    else{
+      toast.error("Request Fail");
+    }
+  }
     
   }
 

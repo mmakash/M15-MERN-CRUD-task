@@ -75,7 +75,7 @@ const StudentTable = () => {
                     </button>
                   </td>
                   <td>
-                    <Link to={"/form?id"+item["_id"]} className="btn btn-outline btn-info"
+                    <Link to={"/form?id=" + item["_id"]} className="btn btn-outline btn-info"
                     >
                       Update
                     </Link>
